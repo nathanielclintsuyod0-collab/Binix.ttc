@@ -3,14 +3,29 @@
 
 <head>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>Binix Paddlers</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
 
-  <script type="module" src="app.js" defer></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+  ></script>
+
+  <script
+    type="module"
+    src="app.js"
+    defer
+  ></script>
 
 </head>
 
@@ -21,15 +36,13 @@
 
   <header>
 
-    <div class="logo-section">
+    <h1>
+      🏓 BINIX PADDLERS
+    </h1>
 
-      <h1>🏓 BINIX PADDLERS</h1>
-
-      <p>
-        Official Table Tennis Rankings
-      </p>
-
-    </div>
+    <p>
+      Official Table Tennis Rankings
+    </p>
 
   </header>
 
@@ -37,13 +50,39 @@
 
     <section class="hero-card fade-up">
 
-      <div>
+      <div id="topPlayer"></div>
 
-        <h2>
-          🏆 Top Ranked Player
-        </h2>
+    </section>
 
-        <div id="topPlayer"></div>
+    <section class="card fade-up">
+
+      <div class="section-header">
+
+        <h2>📈 Club Statistics</h2>
+
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="stat-box">
+          <span>Total Players</span>
+          <h3 id="totalPlayers">0</h3>
+        </div>
+
+        <div class="stat-box">
+          <span>Total Matches</span>
+          <h3 id="totalMatches">0</h3>
+        </div>
+
+        <div class="stat-box">
+          <span>Highest Points</span>
+          <h3 id="highestPoints">0</h3>
+        </div>
+
+        <div class="stat-box">
+          <span>Longest Streak</span>
+          <h3 id="longestStreak">0</h3>
+        </div>
 
       </div>
 
@@ -61,9 +100,23 @@
 
         <select id="winner"></select>
 
-        <span class="vs-text">VS</span>
+        <span class="vs-text">
+          VS
+        </span>
 
         <select id="loser"></select>
+
+        <input
+          type="number"
+          id="winnerScore"
+          placeholder="Winner Score"
+        />
+
+        <input
+          type="number"
+          id="loserScore"
+          placeholder="Loser Score"
+        />
 
         <button id="submitMatch">
           Submit Match
@@ -86,11 +139,19 @@
         <input
           type="text"
           id="newPlayer"
-          placeholder="Enter Player Name"
-        >
+          placeholder="Player Name"
+        />
 
         <button id="addPlayer">
           Add Player
+        </button>
+
+        <button onclick="exportData()">
+          Export Backup
+        </button>
+
+        <button onclick="resetAll()">
+          Reset Rankings
         </button>
 
       </div>
@@ -101,7 +162,19 @@
 
       <div class="section-header">
 
-        <h2>📊 Rankings</h2>
+        <h2>📊 Points Graph</h2>
+
+      </div>
+
+      <canvas id="pointsChart"></canvas>
+
+    </section>
+
+    <section class="card fade-up">
+
+      <div class="section-header">
+
+        <h2>🏆 Rankings</h2>
 
       </div>
 
@@ -119,6 +192,8 @@
               <th>Wins</th>
               <th>Losses</th>
               <th>Streak</th>
+              <th>Badges</th>
+              <th>Actions</th>
 
             </tr>
 
@@ -148,7 +223,4 @@
 
 </body>
 
-</html>
-
-</body>
 </html>
