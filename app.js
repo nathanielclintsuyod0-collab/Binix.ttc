@@ -1,20 +1,17 @@
 const leaderboard =
   document.getElementById("leaderboard");
 
-const topPlayer =
-  document.getElementById("topPlayer");
+const winnerSelect =
+  document.getElementById("winner");
+
+const loserSelect =
+  document.getElementById("loser");
 
 const historyDiv =
   document.getElementById("history");
 
 const tournamentList =
   document.getElementById("tournamentList");
-
-const winnerSelect =
-  document.getElementById("winner");
-
-const loserSelect =
-  document.getElementById("loser");
 
 let players =
   JSON.parse(
@@ -49,6 +46,124 @@ function saveData(){
   );
 }
 
+function render(){
+
+  leaderboard.innerHTML = "";
+
+  winnerSelect.innerHTML = "";
+  loserSelect.innerHTML = "";
+
+  players.sort(
+    (a,b)=>b.points-a.points
+  );
+
+  players.forEach((player,index)=>{
+
+    leaderboard.innerHTML += `
+
+      <tr>
+
+        <td>#${index+1}</td>
+
+        <td>
+
+          <div class="player">
+
+            <img src="${player.avatar}">
+
+            ${player.name}
+
+          </div>
+
+        </td>
+
+        <td>${player.points}</td>
+
+        <td>${player.wins}</td>
+
+        <td>${player.losses}</td>
+
+        <td>${player.streak}</td>
+
+        <td>
+
+          <button
+            onclick="editPlayer('${player.name}')"
+          >
+            Edit
+          </button>
+
+          <button
+            onclick="removePlayer('${player.name}')"
+          >
+            Remove
+          </button>
+
+        </td>
+
+      </tr>
+
+    `;
+
+    winnerSelect.innerHTML += `
+      <option>${player.name}</option>
+    `;
+
+    loserSelect.innerHTML += `
+      <option>${player.name}</option>
+    `;
+  });
+
+  historyDiv.innerHTML = "";
+
+  history
+    .slice()
+    .reverse()
+    .forEach(match=>{
+
+      historyDiv.innerHTML += `
+
+        <div class="history-item">
+
+          🏓 ${match.winner}
+          defeated
+          ${match.loser}
+
+          <br>
+
+          ${match.date}
+
+        </div>
+
+      `;
+    });
+
+  tournamentList.innerHTML = "";
+
+  tournaments
+    .slice()
+    .reverse()
+    .forEach(t=>{
+
+      tournamentList.innerHTML += `
+
+        <div class="tournament-item">
+
+          🏆 ${t.name}
+
+          <br>
+
+          Champion:
+          ${t.champion}
+
+        </div>
+
+      `;
+    });
+
+  saveData();
+}
+
 function expected(a,b){
 
   return 1 / (
@@ -78,306 +193,87 @@ function updatePoints(winner,loser){
   winner.points =
     Math.round(
       winner.points +
-      K * (1-ew)
+      K*(1-ew)
     );
 
   loser.points =
     Math.round(
       loser.points -
-      K * el
+      K*el
     );
 }
 
-function updateBadges(player){
-
-  player.badges = [];
-
-  if(player.points >= 300)
-    player.badges.push("🏆 Elite");
-
-  if(player.streak >= 5)
-    player.badges.push("🔥 Streak");
-
-  if(player.wins >= 10)
-    player.badges.push("⚡ Veteran");
-}
-
-function render(){
-
-  players.sort(
-    (a,b)=>b.points-a.points
-  );
-
-  leaderboard.innerHTML = "";
-
-  winnerSelect.innerHTML = "";
-  loserSelect.innerHTML = "";
-
-  players.forEach((player,index)=>{
-
-    updateBadges(player);
-
-    let rank = "";
-
-    if(index===0) rank="rank1";
-    if(index===1) rank="rank2";
-    if(index===2) rank="rank3";
-
-    leaderboard.innerHTML += `
-
-      <tr>
-
-        <td class="${rank}">
-          #${index+1}
-        </td>
-
-        <td>
-
-          <div class="player">
-
-            <img
-              src="${
-                player.avatar ||
-                'https://i.imgur.com/6VBx3io.png'
-              }"
-            >
-
-            ${player.name}
-
-          </div>
-
-        </td>
-
-        <td>${player.points}</td>
-
-        <td>${player.wins}</td>
-
-        <td>${player.losses}</td>
-
-        <td>🔥 ${player.streak}</td>
-
-        <td>
-
-          ${
-            player.badges
-            .map(
-              b=>`
-                <span class="badge">
-                  ${b}
-                </span>
-              `
-            )
-            .join("")
-          }
-
-        </td>
-
-        <td>
-
-          <button
-            onclick="editPlayer('${player.name}')"
-          >
-            Edit
-          </button>
-
-          <button
-            onclick="removePlayer('${player.name}')"
-          >
-            Remove
-          </button>
-
-        </td>
-
-      </tr>
-
-    `;
-
-    winnerSelect.innerHTML += `
-      <option value="${player.name}">
-        ${player.name}
-      </option>
-    `;
-
-    loserSelect.innerHTML += `
-      <option value="${player.name}">
-        ${player.name}
-      </option>
-    `;
-  });
-
-  if(players.length > 0){
-
-    const top = players[0];
-
-    topPlayer.innerHTML = `
-
-      <div class="top">
-
-        <img
-          src="${
-            top.avatar ||
-            'https://i.imgur.com/6VBx3io.png'
-          }"
-        >
-
-        <div>
-
-          <h2>
-            ${top.name}
-          </h2>
-
-          <p>
-            ${top.points} Points
-          </p>
-
-          <p>
-            ${top.wins} Wins •
-            ${top.losses} Losses
-          </p>
-
-          <p>
-            🔥 ${top.streak} Win Streak
-          </p>
-
-        </div>
-
-      </div>
-
-    `;
-  }
-
-  historyDiv.innerHTML = "";
-
-  history
-    .slice()
-    .reverse()
-    .forEach(match=>{
-
-      historyDiv.innerHTML += `
-
-        <div class="history-item">
-
-          🏓
-          <strong>${match.winner}</strong>
-
-          (${match.winnerScore})
-
-          defeated
-
-          <strong>${match.loser}</strong>
-
-          (${match.loserScore})
-
-          <br><br>
-
-          🕒 ${match.date}
-
-        </div>
-
-      `;
-    });
-
-  tournamentList.innerHTML = "";
-
-  tournaments
-    .slice()
-    .reverse()
-    .forEach(tournament=>{
-
-      tournamentList.innerHTML += `
-
-        <div class="tournament-item">
-
-          🏆
-          <strong>
-            ${tournament.name}
-          </strong>
-
-          <br><br>
-
-          Champion:
-          ${tournament.champion}
-
-          <br><br>
-
-          📅 ${tournament.date}
-
-        </div>
-
-      `;
-    });
-
-  document.getElementById(
-    "totalPlayers"
-  ).textContent =
-    players.length;
-
-  document.getElementById(
-    "totalMatches"
-  ).textContent =
-    history.length;
-
-  document.getElementById(
-    "highestPoints"
-  ).textContent =
-    players[0]
-      ? players[0].points
-      : 0;
-
-  document.getElementById(
-    "longestStreak"
-  ).textContent =
-    Math.max(
-      0,
-      ...players.map(
-        p=>p.streak
-      )
-    );
-
-  renderChart();
-
-  saveData();
-}
-
-function renderChart(){
-
-  const ctx =
-    document.getElementById(
-      "pointsChart"
-    );
-
-  if(window.pointsChart){
-
-    window.pointsChart.destroy();
-  }
-
-  window.pointsChart =
-    new Chart(ctx,{
-
-      type:'bar',
-
-      data:{
-
-        labels:
-          players.map(
-            p=>p.name
-          ),
-
-        datasets:[{
-
-          label:'Points',
-
-          data:
-            players.map(
-              p=>p.points
-            ),
-
-          borderWidth:1
-
-        }]
+document
+  .getElementById("addPlayer")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const name =
+        document
+        .getElementById("newPlayer")
+        .value
+        .trim();
+
+      const file =
+        document
+        .getElementById("playerPhoto")
+        .files[0];
+
+      if(!name){
+
+        alert(
+          "Enter player name."
+        );
+
+        return;
       }
-    });
-}
+
+      function createPlayer(image){
+
+        players.unshift({
+
+          name:name,
+
+          points:100,
+
+          wins:0,
+
+          losses:0,
+
+          streak:0,
+
+          avatar:image
+
+        });
+
+        saveData();
+        render();
+      }
+
+      if(file){
+
+        const reader =
+          new FileReader();
+
+        reader.onload =
+          function(e){
+
+            createPlayer(
+              e.target.result
+            );
+          };
+
+        reader.readAsDataURL(file);
+
+      }else{
+
+        createPlayer(
+          "https://i.imgur.com/6VBx3io.png"
+        );
+      }
+    }
+  );
 
 document
   .getElementById("submitMatch")
@@ -429,75 +325,12 @@ document
 
         loser:loser.name,
 
-        winnerScore:
-          document.getElementById(
-            "winnerScore"
-          ).value,
-
-        loserScore:
-          document.getElementById(
-            "loserScore"
-          ).value,
-
         date:new Date()
           .toLocaleString()
 
       });
 
-      render();
-    }
-  );
-
-document
-  .getElementById("addPlayer")
-  .addEventListener(
-    "click",
-    ()=>{
-
-      const name =
-        document
-        .getElementById(
-          "newPlayer"
-        ).value
-        .trim();
-
-      if(!name){
-
-        alert(
-          "Enter player name."
-        );
-
-        return;
-      }
-
-      const avatar =
-        prompt(
-          "Enter avatar URL (optional)"
-        );
-
-      players.unshift({
-
-        name:name,
-
-        points:100,
-
-        wins:0,
-
-        losses:0,
-
-        streak:0,
-
-        avatar:avatar,
-
-        badges:[]
-
-      });
-
-      document
-        .getElementById(
-          "newPlayer"
-        ).value = "";
-
+      saveData();
       render();
     }
   );
@@ -510,44 +343,23 @@ document
 
       const name =
         document
-        .getElementById(
-          "tournamentName"
-        ).value;
+        .getElementById("tournamentName")
+        .value;
 
       const champion =
         document
-        .getElementById(
-          "tournamentChampion"
-        ).value;
-
-      if(!name || !champion){
-
-        alert(
-          "Fill all tournament fields."
-        );
-
-        return;
-      }
+        .getElementById("tournamentChampion")
+        .value;
 
       tournaments.push({
 
         name:name,
 
-        champion:champion,
-
-        date:new Date()
-          .toLocaleDateString()
+        champion:champion
 
       });
 
-      document.getElementById(
-        "tournamentName"
-      ).value = "";
-
-      document.getElementById(
-        "tournamentChampion"
-      ).value = "";
-
+      saveData();
       render();
     }
   );
@@ -559,26 +371,30 @@ function removePlayer(name){
       p=>p.name!==name
     );
 
+  saveData();
   render();
 }
 
-function editPlayer(oldName){
+function editPlayer(name){
 
   const player =
     players.find(
-      p=>p.name===oldName
+      p=>p.name===name
     );
 
   const newName =
     prompt(
-      "New player name:",
+      "New Name:",
       player.name
     );
 
-  if(newName)
+  if(newName){
+
     player.name = newName;
 
-  render();
+    saveData();
+    render();
+  }
 }
 
 function exportData(){
