@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Binix Paddlers Rankings</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      color:white;
+      padding:30px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:10px;
+      font-size:42px;
+    }
+
+    .subtitle{
+      text-align:center;
+      opacity:.7;
+      margin-bottom:40px;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+    }
+
+    .card{
+      background:#1e293b;
+      border-radius:20px;
+      padding:25px;
+      margin-bottom:25px;
+      box-shadow:0 0 20px rgba(0,0,0,.3);
+    }
+
+    h2{
+      margin-bottom:20px;
+      color:#38bdf8;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    th, td{
+      padding:15px;
+      border-bottom:1px solid #334155;
+      text-align:left;
+    }
+
+    th{
+      color:#38bdf8;
+    }
+
+    tr:hover{
+      background:rgba(255,255,255,.05);
+    }
+
+    select, button{
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      margin:5px;
+      font-size:16px;
+    }
+
+    select{
+      background:#334155;
+      color:white;
+    }
+
+    button{
+      background:#7c3aed;
+      color:white;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:scale(1.03);
+    }
+
+    .rank1{
+      color:gold;
+      font-weight:bold;
+    }
+
+    .rank2{
+      color:silver;
+      font-weight:bold;
+    }
+
+    .rank3{
+      color:#cd7f32;
+      font-weight:bold;
+    }
+
+    .top-player{
+      font-size:22px;
+      line-height:1.8;
+    }
+
+    .match-history{
+      margin-top:20px;
+    }
+
+    .history-item{
+      padding:10px;
+      border-bottom:1px solid #334155;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🏓 BINIX PADDLERS</h1>
+  <p class="subtitle">Official Club Rankings</p>
+
+  <div class="card">
+    <h2>🏆 Top Player</h2>
+    <div id="topPlayer" class="top-player"></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ Record Match</h2>
+
+    <select id="player1"></select>
+
+    <select id="player2"></select>
+
+    <button onclick="recordMatch()">
+      Submit Match
+    </button>
+
+    <p style="margin-top:10px;opacity:.7;">
+      Player 1 is considered the winner.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>📊 Rankings</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th>Points</th>
+          <th>Wins</th>
+          <th>Losses</th>
+        </tr>
+      </thead>
+
+      <tbody id="leaderboard"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📝 Match History</h2>
+
+    <div id="history" class="match-history"></div>
+  </div>
+
+</div>
+
+<script>
+
+let players = JSON.parse(localStorage.getItem("players")) || [
+  {
+    name:"Nathaniel",
+    points:1200,
+    wins:0,
+    losses:0
+  },
+  {
+    name:"Miguel",
+    points:1200,
+    wins:0,
+    losses:0
+  },
+  {
+    name:"Andre",
+    points:1200,
+    wins:0,
+    losses:0
+  }
+];
+
+let history = JSON.parse(localStorage.getItem("history")) || [];
+
+function saveData(){
+  localStorage.setItem("players", JSON.stringify(players));
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+function expectedScore(ratingA, ratingB){
+  return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+}
+
+function updatePoints(winner, loser){
+
+  const K = 32;
+
+  const expectedWinner = expectedScore(
+    winner.points,
+    loser.points
+  );
+
+  const expectedLoser = expectedScore(
+    loser.points,
+    winner.points
+  );
+
+  winner.points = Math.round(
+    winner.points + K * (1 - expectedWinner)
+  );
+
+  loser.points = Math.round(
+    loser.points + K * (0 - expectedLoser)
+  );
+
+}
+
+function render(){
+
+  players.sort((a,b)=>b.points-a.points);
+
+  const leaderboard = document.getElementById("leaderboard");
+  leaderboard.innerHTML = "";
+
+  players.forEach((player,index)=>{
+
+    let rankClass = "";
+
+    if(index===0) rankClass="rank1";
+    if(index===1) rankClass="rank2";
+    if(index===2) rankClass="rank3";
+
+    leaderboard.innerHTML += `
+      <tr>
+        <td class="${rankClass}">#${index+1}</td>
+        <td>${player.name}</td>
+        <td>${player.points}</td>
+        <td>${player.wins}</td>
+        <td>${player.losses}</td>
+      </tr>
+    `;
+  });
+
+  const top = players[0];
+
+  document.getElementById("topPlayer").innerHTML = `
+    <strong>${top.name}</strong><br>
+    ${top.points} Points<br>
+    ${top.wins} Wins • ${top.losses} Losses
+  `;
+
+  const p1 = document.getElementById("player1");
+  const p2 = document.getElementById("player2");
+
+  p1.innerHTML = "";
+  p2.innerHTML = "";
+
+  players.forEach(player=>{
+
+    p1.innerHTML += `
+      <option value="${player.name}">
+        ${player.name}
+      </option>
+    `;
+
+    p2.innerHTML += `
+      <option value="${player.name}">
+        ${player.name}
+      </option>
+    `;
+  });
+
+  const historyDiv = document.getElementById("history");
+  historyDiv.innerHTML = "";
+
+  history.slice().reverse().forEach(match=>{
+
+    historyDiv.innerHTML += `
+      <div class="history-item">
+        🏓 ${match.winner} defeated ${match.loser}
+      </div>
+    `;
+  });
+
+}
+
+function recordMatch(){
+
+  const winnerName =
+    document.getElementById("player1").value;
+
+  const loserName =
+    document.getElementById("player2").value;
+
+  if(winnerName === loserName){
+    alert("Players cannot be the same.");
+    return;
+  }
+
+  const winner =
+    players.find(p=>p.name===winnerName);
+
+  const loser =
+    players.find(p=>p.name===loserName);
+
+  updatePoints(winner, loser);
+
+  winner.wins++;
+  loser.losses++;
+
+  history.push({
+    winner:winner.name,
+    loser:loser.name
+  });
+
+  saveData();
+  render();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
