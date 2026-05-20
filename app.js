@@ -7,6 +7,9 @@ const topPlayer =
 const historyDiv =
   document.getElementById("history");
 
+const tournamentList =
+  document.getElementById("tournamentList");
+
 const winnerSelect =
   document.getElementById("winner");
 
@@ -23,6 +26,11 @@ let history =
     localStorage.getItem("history")
   ) || [];
 
+let tournaments =
+  JSON.parse(
+    localStorage.getItem("tournaments")
+  ) || [];
+
 function saveData(){
 
   localStorage.setItem(
@@ -34,9 +42,14 @@ function saveData(){
     "history",
     JSON.stringify(history)
   );
+
+  localStorage.setItem(
+    "tournaments",
+    JSON.stringify(tournaments)
+  );
 }
 
-function expectedScore(a,b){
+function expected(a,b){
 
   return 1 / (
     1 + Math.pow(
@@ -50,27 +63,29 @@ function updatePoints(winner,loser){
 
   const K = 32;
 
-  const expectedWinner =
-    expectedScore(
+  const ew =
+    expected(
       winner.points,
       loser.points
     );
 
-  const expectedLoser =
-    expectedScore(
+  const el =
+    expected(
       loser.points,
       winner.points
     );
 
-  winner.points = Math.round(
-    winner.points +
-    K * (1 - expectedWinner)
-  );
+  winner.points =
+    Math.round(
+      winner.points +
+      K * (1-ew)
+    );
 
-  loser.points = Math.round(
-    loser.points -
-    K * expectedLoser
-  );
+  loser.points =
+    Math.round(
+      loser.points -
+      K * el
+    );
 }
 
 function updateBadges(player){
@@ -102,28 +117,23 @@ function render(){
 
     updateBadges(player);
 
-    let rankClass = "";
+    let rank = "";
 
-    if(index===0)
-      rankClass="rank1";
-
-    if(index===1)
-      rankClass="rank2";
-
-    if(index===2)
-      rankClass="rank3";
+    if(index===0) rank="rank1";
+    if(index===1) rank="rank2";
+    if(index===2) rank="rank3";
 
     leaderboard.innerHTML += `
 
       <tr>
 
-        <td class="${rankClass}">
+        <td class="${rank}">
           #${index+1}
         </td>
 
         <td>
 
-          <div class="player-cell">
+          <div class="player">
 
             <img
               src="${
@@ -201,10 +211,9 @@ function render(){
 
     topPlayer.innerHTML = `
 
-      <div class="top-wrapper">
+      <div class="top">
 
         <img
-          class="top-avatar"
           src="${
             top.avatar ||
             'https://i.imgur.com/6VBx3io.png'
@@ -268,13 +277,45 @@ function render(){
       `;
     });
 
+  tournamentList.innerHTML = "";
+
+  tournaments
+    .slice()
+    .reverse()
+    .forEach(tournament=>{
+
+      tournamentList.innerHTML += `
+
+        <div class="tournament-item">
+
+          🏆
+          <strong>
+            ${tournament.name}
+          </strong>
+
+          <br><br>
+
+          Champion:
+          ${tournament.champion}
+
+          <br><br>
+
+          📅 ${tournament.date}
+
+        </div>
+
+      `;
+    });
+
   document.getElementById(
     "totalPlayers"
-  ).textContent = players.length;
+  ).textContent =
+    players.length;
 
   document.getElementById(
     "totalMatches"
-  ).textContent = history.length;
+  ).textContent =
+    history.length;
 
   document.getElementById(
     "highestPoints"
@@ -301,8 +342,9 @@ function render(){
 function renderChart(){
 
   const ctx =
-    document
-    .getElementById("pointsChart");
+    document.getElementById(
+      "pointsChart"
+    );
 
   if(window.pointsChart){
 
@@ -349,18 +391,6 @@ document
       const loserName =
         loserSelect.value;
 
-      const winnerScore =
-        document
-        .getElementById(
-          "winnerScore"
-        ).value;
-
-      const loserScore =
-        document
-        .getElementById(
-          "loserScore"
-        ).value;
-
       if(
         winnerName===loserName
       ){
@@ -399,9 +429,15 @@ document
 
         loser:loser.name,
 
-        winnerScore:winnerScore,
+        winnerScore:
+          document.getElementById(
+            "winnerScore"
+          ).value,
 
-        loserScore:loserScore,
+        loserScore:
+          document.getElementById(
+            "loserScore"
+          ).value,
 
         date:new Date()
           .toLocaleString()
@@ -436,10 +472,10 @@ document
 
       const avatar =
         prompt(
-          "Enter image URL (optional)"
+          "Enter avatar URL (optional)"
         );
 
-      players.push({
+      players.unshift({
 
         name:name,
 
@@ -466,6 +502,56 @@ document
     }
   );
 
+document
+  .getElementById("addTournament")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const name =
+        document
+        .getElementById(
+          "tournamentName"
+        ).value;
+
+      const champion =
+        document
+        .getElementById(
+          "tournamentChampion"
+        ).value;
+
+      if(!name || !champion){
+
+        alert(
+          "Fill all tournament fields."
+        );
+
+        return;
+      }
+
+      tournaments.push({
+
+        name:name,
+
+        champion:champion,
+
+        date:new Date()
+          .toLocaleDateString()
+
+      });
+
+      document.getElementById(
+        "tournamentName"
+      ).value = "";
+
+      document.getElementById(
+        "tournamentChampion"
+      ).value = "";
+
+      render();
+    }
+  );
+
 function removePlayer(name){
 
   players =
@@ -485,7 +571,7 @@ function editPlayer(oldName){
 
   const newName =
     prompt(
-      "New name:",
+      "New player name:",
       player.name
     );
 
@@ -495,28 +581,13 @@ function editPlayer(oldName){
   render();
 }
 
-function resetAll(){
-
-  if(
-    !confirm(
-      "Reset everything?"
-    )
-  ) return;
-
-  players = [];
-  history = [];
-
-  localStorage.clear();
-
-  render();
-}
-
 function exportData(){
 
   const data = {
 
     players,
-    history
+    history,
+    tournaments
 
   };
 
@@ -547,16 +618,33 @@ function exportData(){
   a.click();
 }
 
+function resetAll(){
+
+  if(
+    !confirm(
+      "Reset all data?"
+    )
+  ) return;
+
+  players = [];
+  history = [];
+  tournaments = [];
+
+  localStorage.clear();
+
+  render();
+}
+
 render();
 
-window.removePlayer =
+globalThis.removePlayer =
   removePlayer;
 
-window.editPlayer =
+globalThis.editPlayer =
   editPlayer;
 
-window.resetAll =
-  resetAll;
-
-window.exportData =
+globalThis.exportData =
   exportData;
+
+globalThis.resetAll =
+  resetAll;
