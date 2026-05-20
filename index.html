@@ -3,26 +3,25 @@
 
 <head>
 
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  />
+  >
 
   <title>Binix Paddlers</title>
 
   <link
     rel="stylesheet"
     href="style.css"
-  />
+  >
 
   <script
     src="https://cdn.jsdelivr.net/npm/chart.js"
   ></script>
 
   <script
-    type="module"
     src="app.js"
     defer
   ></script>
@@ -31,8 +30,8 @@
 
 <body>
 
-  <div class="background-glow glow1"></div>
-  <div class="background-glow glow2"></div>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
 
   <header>
 
@@ -41,14 +40,14 @@
     </h1>
 
     <p>
-      Official Table Tennis Rankings
+      Official Table Tennis Ranking System
     </p>
 
   </header>
 
   <main>
 
-    <section class="hero-card fade-up">
+    <section class="hero fade-up">
 
       <div id="topPlayer"></div>
 
@@ -56,32 +55,42 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
-
-        <h2>📈 Club Statistics</h2>
-
-      </div>
+      <h2>
+        📊 Club Statistics
+      </h2>
 
       <div class="stats-grid">
 
         <div class="stat-box">
+
           <span>Total Players</span>
+
           <h3 id="totalPlayers">0</h3>
+
         </div>
 
         <div class="stat-box">
+
           <span>Total Matches</span>
+
           <h3 id="totalMatches">0</h3>
+
         </div>
 
         <div class="stat-box">
-          <span>Highest Points</span>
+
+          <span>Top Points</span>
+
           <h3 id="highestPoints">0</h3>
+
         </div>
 
         <div class="stat-box">
+
           <span>Longest Streak</span>
+
           <h3 id="longestStreak">0</h3>
+
         </div>
 
       </div>
@@ -90,17 +99,15 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
+      <h2>
+        ➕ Record Match
+      </h2>
 
-        <h2>➕ Record Match</h2>
-
-      </div>
-
-      <div class="match-controls">
+      <div class="controls">
 
         <select id="winner"></select>
 
-        <span class="vs-text">
+        <span class="vs">
           VS
         </span>
 
@@ -110,13 +117,13 @@
           type="number"
           id="winnerScore"
           placeholder="Winner Score"
-        />
+        >
 
         <input
           type="number"
           id="loserScore"
           placeholder="Loser Score"
-        />
+        >
 
         <button id="submitMatch">
           Submit Match
@@ -128,30 +135,58 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
+      <h2>
+        🏆 Tournament Area
+      </h2>
 
-        <h2>👤 Add Players</h2>
+      <div class="controls">
+
+        <input
+          type="text"
+          id="tournamentName"
+          placeholder="Tournament Name"
+        >
+
+        <input
+          type="text"
+          id="tournamentChampion"
+          placeholder="Champion Name"
+        >
+
+        <button id="addTournament">
+          Add Tournament
+        </button>
 
       </div>
 
-      <div class="player-controls">
+      <div id="tournamentList"></div>
+
+    </section>
+
+    <section class="card fade-up">
+
+      <h2>
+        👤 Add Player
+      </h2>
+
+      <div class="controls">
 
         <input
           type="text"
           id="newPlayer"
           placeholder="Player Name"
-        />
+        >
 
         <button id="addPlayer">
           Add Player
         </button>
 
         <button onclick="exportData()">
-          Export Backup
+          Export Data
         </button>
 
         <button onclick="resetAll()">
-          Reset Rankings
+          Reset
         </button>
 
       </div>
@@ -160,11 +195,9 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
-
-        <h2>📊 Points Graph</h2>
-
-      </div>
+      <h2>
+        📈 Points Graph
+      </h2>
 
       <canvas id="pointsChart"></canvas>
 
@@ -172,13 +205,11 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
+      <h2>
+        🏓 Rankings
+      </h2>
 
-        <h2>🏆 Rankings</h2>
-
-      </div>
-
-      <div class="table-wrapper">
+      <div class="table-wrap">
 
         <table>
 
@@ -209,11 +240,9 @@
 
     <section class="card fade-up">
 
-      <div class="section-header">
-
-        <h2>📝 Match History</h2>
-
-      </div>
+      <h2>
+        📝 Match History
+      </h2>
 
       <div id="history"></div>
 
