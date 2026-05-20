@@ -13,15 +13,6 @@ const winnerSelect =
 const loserSelect =
   document.getElementById("loser");
 
-const submitMatch =
-  document.getElementById("submitMatch");
-
-const addPlayerBtn =
-  document.getElementById("addPlayer");
-
-const newPlayerInput =
-  document.getElementById("newPlayer");
-
 let players =
   JSON.parse(
     localStorage.getItem("players")
@@ -82,6 +73,20 @@ function updatePoints(winner,loser){
   );
 }
 
+function updateBadges(player){
+
+  player.badges = [];
+
+  if(player.points >= 300)
+    player.badges.push("🏆 Elite");
+
+  if(player.streak >= 5)
+    player.badges.push("🔥 Streak");
+
+  if(player.wins >= 10)
+    player.badges.push("⚡ Veteran");
+}
+
 function render(){
 
   players.sort(
@@ -94,6 +99,8 @@ function render(){
   loserSelect.innerHTML = "";
 
   players.forEach((player,index)=>{
+
+    updateBadges(player);
 
     let rankClass = "";
 
@@ -114,7 +121,22 @@ function render(){
           #${index+1}
         </td>
 
-        <td>${player.name}</td>
+        <td>
+
+          <div class="player-cell">
+
+            <img
+              src="${
+                player.avatar ||
+                'https://i.imgur.com/6VBx3io.png'
+              }"
+            >
+
+            ${player.name}
+
+          </div>
+
+        </td>
 
         <td>${player.points}</td>
 
@@ -123,6 +145,38 @@ function render(){
         <td>${player.losses}</td>
 
         <td>🔥 ${player.streak}</td>
+
+        <td>
+
+          ${
+            player.badges
+            .map(
+              b=>`
+                <span class="badge">
+                  ${b}
+                </span>
+              `
+            )
+            .join("")
+          }
+
+        </td>
+
+        <td>
+
+          <button
+            onclick="editPlayer('${player.name}')"
+          >
+            Edit
+          </button>
+
+          <button
+            onclick="removePlayer('${player.name}')"
+          >
+            Remove
+          </button>
+
+        </td>
 
       </tr>
 
@@ -147,22 +201,38 @@ function render(){
 
     topPlayer.innerHTML = `
 
-      <strong>
-        ${top.name}
-      </strong>
+      <div class="top-wrapper">
 
-      <br>
+        <img
+          class="top-avatar"
+          src="${
+            top.avatar ||
+            'https://i.imgur.com/6VBx3io.png'
+          }"
+        >
 
-      ${top.points} Points
+        <div>
 
-      <br>
+          <h2>
+            ${top.name}
+          </h2>
 
-      ${top.wins} Wins •
-      ${top.losses} Losses
+          <p>
+            ${top.points} Points
+          </p>
 
-      <br>
+          <p>
+            ${top.wins} Wins •
+            ${top.losses} Losses
+          </p>
 
-      🔥 ${top.streak} Win Streak
+          <p>
+            🔥 ${top.streak} Win Streak
+          </p>
+
+        </div>
+
+      </div>
 
     `;
   }
@@ -181,9 +251,13 @@ function render(){
           🏓
           <strong>${match.winner}</strong>
 
+          (${match.winnerScore})
+
           defeated
 
           <strong>${match.loser}</strong>
+
+          (${match.loserScore})
 
           <br><br>
 
@@ -193,117 +267,296 @@ function render(){
 
       `;
     });
-}
 
-submitMatch.addEventListener(
-  "click",
-  ()=>{
+  document.getElementById(
+    "totalPlayers"
+  ).textContent = players.length;
 
-    const winnerName =
-      winnerSelect.value;
+  document.getElementById(
+    "totalMatches"
+  ).textContent = history.length;
 
-    const loserName =
-      loserSelect.value;
+  document.getElementById(
+    "highestPoints"
+  ).textContent =
+    players[0]
+      ? players[0].points
+      : 0;
 
-    if(
-      winnerName===loserName
-    ){
-
-      alert(
-        "Players cannot be the same."
-      );
-
-      return;
-    }
-
-    const winner =
-      players.find(
-        p=>p.name===winnerName
-      );
-
-    const loser =
-      players.find(
-        p=>p.name===loserName
-      );
-
-    updatePoints(
-      winner,
-      loser
+  document.getElementById(
+    "longestStreak"
+  ).textContent =
+    Math.max(
+      0,
+      ...players.map(
+        p=>p.streak
+      )
     );
 
-    winner.wins++;
-    loser.losses++;
+  renderChart();
 
-    winner.streak++;
-    loser.streak = 0;
+  saveData();
+}
 
-    history.push({
+function renderChart(){
 
-      winner:winner.name,
+  const ctx =
+    document
+    .getElementById("pointsChart");
 
-      loser:loser.name,
+  if(window.pointsChart){
 
-      date:new Date()
-        .toLocaleString()
-
-    });
-
-    saveData();
-    render();
+    window.pointsChart.destroy();
   }
-);
 
-addPlayerBtn.addEventListener(
-  "click",
-  ()=>{
+  window.pointsChart =
+    new Chart(ctx,{
 
-    const name =
-      newPlayerInput.value.trim();
+      type:'bar',
 
-    if(!name){
+      data:{
 
-      alert(
-        "Please enter a player name."
-      );
+        labels:
+          players.map(
+            p=>p.name
+          ),
 
-      return;
-    }
+        datasets:[{
 
-    const exists =
-      players.some(
-        p=>
-        p.name.toLowerCase()===
-        name.toLowerCase()
-      );
+          label:'Points',
 
-    if(exists){
+          data:
+            players.map(
+              p=>p.points
+            ),
 
-      alert(
-        "Player already exists."
-      );
+          borderWidth:1
 
-      return;
-    }
-
-    players.push({
-
-      name:name,
-
-      points:100,
-
-      wins:0,
-
-      losses:0,
-
-      streak:0
-
+        }]
+      }
     });
+}
 
-    newPlayerInput.value = "";
+document
+  .getElementById("submitMatch")
+  .addEventListener(
+    "click",
+    ()=>{
 
-    saveData();
-    render();
-  }
-);
+      const winnerName =
+        winnerSelect.value;
+
+      const loserName =
+        loserSelect.value;
+
+      const winnerScore =
+        document
+        .getElementById(
+          "winnerScore"
+        ).value;
+
+      const loserScore =
+        document
+        .getElementById(
+          "loserScore"
+        ).value;
+
+      if(
+        winnerName===loserName
+      ){
+
+        alert(
+          "Players cannot be the same."
+        );
+
+        return;
+      }
+
+      const winner =
+        players.find(
+          p=>p.name===winnerName
+        );
+
+      const loser =
+        players.find(
+          p=>p.name===loserName
+        );
+
+      updatePoints(
+        winner,
+        loser
+      );
+
+      winner.wins++;
+      loser.losses++;
+
+      winner.streak++;
+      loser.streak = 0;
+
+      history.push({
+
+        winner:winner.name,
+
+        loser:loser.name,
+
+        winnerScore:winnerScore,
+
+        loserScore:loserScore,
+
+        date:new Date()
+          .toLocaleString()
+
+      });
+
+      render();
+    }
+  );
+
+document
+  .getElementById("addPlayer")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const name =
+        document
+        .getElementById(
+          "newPlayer"
+        ).value
+        .trim();
+
+      if(!name){
+
+        alert(
+          "Enter player name."
+        );
+
+        return;
+      }
+
+      const avatar =
+        prompt(
+          "Enter image URL (optional)"
+        );
+
+      players.push({
+
+        name:name,
+
+        points:100,
+
+        wins:0,
+
+        losses:0,
+
+        streak:0,
+
+        avatar:avatar,
+
+        badges:[]
+
+      });
+
+      document
+        .getElementById(
+          "newPlayer"
+        ).value = "";
+
+      render();
+    }
+  );
+
+function removePlayer(name){
+
+  players =
+    players.filter(
+      p=>p.name!==name
+    );
+
+  render();
+}
+
+function editPlayer(oldName){
+
+  const player =
+    players.find(
+      p=>p.name===oldName
+    );
+
+  const newName =
+    prompt(
+      "New name:",
+      player.name
+    );
+
+  if(newName)
+    player.name = newName;
+
+  render();
+}
+
+function resetAll(){
+
+  if(
+    !confirm(
+      "Reset everything?"
+    )
+  ) return;
+
+  players = [];
+  history = [];
+
+  localStorage.clear();
+
+  render();
+}
+
+function exportData(){
+
+  const data = {
+
+    players,
+    history
+
+  };
+
+  const blob =
+    new Blob(
+      [
+        JSON.stringify(
+          data,
+          null,
+          2
+        )
+      ],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+  const a =
+    document.createElement("a");
+
+  a.href =
+    URL.createObjectURL(blob);
+
+  a.download =
+    "binix-backup.json";
+
+  a.click();
+}
 
 render();
+
+window.removePlayer =
+  removePlayer;
+
+window.editPlayer =
+  editPlayer;
+
+window.resetAll =
+  resetAll;
+
+window.exportData =
+  exportData;
