@@ -9,62 +9,20 @@
 }
 
 body{
-
   background:#020617;
   color:white;
-
   font-family:'Inter',sans-serif;
-
   min-height:100vh;
-
   overflow-x:hidden;
 }
 
-.bg-glow{
-
-  position:fixed;
-
-  width:500px;
-  height:500px;
-
-  border-radius:50%;
-
-  filter:blur(120px);
-
-  z-index:-1;
-}
-
-.glow1{
-
-  background:#7c3aed;
-
-  top:-150px;
-  left:-150px;
-
-  opacity:.3;
-}
-
-.glow2{
-
-  background:#38bdf8;
-
-  bottom:-150px;
-  right:-150px;
-
-  opacity:.25;
-}
-
 header{
-
   text-align:center;
-
   padding:60px 20px;
 }
 
 header h1{
-
   font-size:60px;
-
   font-weight:900;
 
   background:
@@ -76,23 +34,11 @@ header h1{
 
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-
-  animation:float 4s ease infinite;
-}
-
-header p{
-
-  margin-top:12px;
-
-  opacity:.75;
 }
 
 main{
-
   max-width:1300px;
-
   margin:auto;
-
   padding:20px;
 }
 
@@ -102,46 +48,18 @@ main{
   background:
     rgba(15,23,42,.75);
 
-  border:
-    1px solid
-    rgba(255,255,255,.08);
-
-  backdrop-filter:blur(18px);
-
   border-radius:28px;
 
   padding:30px;
 
   margin-bottom:25px;
 
-  transition:.3s ease;
-
-  box-shadow:
-    0 0 35px rgba(0,0,0,.35);
-}
-
-.card:hover,
-.hero:hover{
-
-  transform:translateY(-5px);
-
-  border-color:
-    rgba(56,189,248,.4);
-}
-
-h2{
-
-  color:#38bdf8;
-
-  margin-bottom:20px;
+  backdrop-filter:blur(18px);
 }
 
 .controls{
-
   display:flex;
-
   flex-wrap:wrap;
-
   gap:15px;
 }
 
@@ -154,27 +72,13 @@ select{
 
   background:#0f172a;
 
-  border:
-    1px solid
-    rgba(255,255,255,.08);
+  border:none;
 
   color:white;
 
   padding:15px;
 
   border-radius:16px;
-
-  transition:.25s ease;
-
-  outline:none;
-}
-
-input:focus,
-select:focus{
-
-  border-color:#38bdf8;
-
-  transform:scale(1.02);
 }
 
 button{
@@ -197,232 +101,29 @@ button{
   font-weight:700;
 
   cursor:pointer;
-
-  transition:.3s ease;
-}
-
-button:hover{
-
-  transform:
-    translateY(-3px)
-    scale(1.03);
-}
-
-.stats-grid{
-
-  display:grid;
-
-  grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-  gap:20px;
-}
-
-.stat-box{
-
-  background:
-    rgba(255,255,255,.04);
-
-  border-radius:20px;
-
-  padding:25px;
-
-  text-align:center;
-}
-
-.stat-box h3{
-
-  margin-top:10px;
-
-  font-size:34px;
-}
-
-.table-wrap{
-
-  overflow-x:auto;
 }
 
 table{
-
   width:100%;
-
   border-collapse:collapse;
 }
 
 th,
 td{
-
   padding:18px;
-
   border-bottom:
-    1px solid
-    rgba(255,255,255,.06);
-
-  text-align:left;
-}
-
-th{
-
-  color:#38bdf8;
-}
-
-tr{
-
-  transition:.25s ease;
-}
-
-tr:hover{
-
-  background:
-    rgba(255,255,255,.04);
-}
-
-.rank1{
-  color:gold;
-}
-
-.rank2{
-  color:silver;
-}
-
-.rank3{
-  color:#cd7f32;
+    1px solid rgba(255,255,255,.06);
 }
 
 .player{
-
   display:flex;
-
   align-items:center;
-
   gap:12px;
 }
 
 .player img{
-
   width:45px;
   height:45px;
-
   border-radius:50%;
-
   object-fit:cover;
-
-  border:2px solid #38bdf8;
-}
-
-.top{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:20px;
-}
-
-.top img{
-
-  width:100px;
-  height:100px;
-
-  border-radius:50%;
-
-  border:3px solid gold;
-
-  object-fit:cover;
-}
-
-.badge{
-
-  background:
-    rgba(124,58,237,.25);
-
-  padding:6px 10px;
-
-  border-radius:12px;
-
-  font-size:12px;
-
-  margin-right:5px;
-}
-
-.history-item,
-.tournament-item{
-
-  background:
-    rgba(255,255,255,.03);
-
-  border:
-    1px solid
-    rgba(255,255,255,.05);
-
-  border-radius:18px;
-
-  padding:18px;
-
-  margin-bottom:14px;
-
-  transition:.25s ease;
-}
-
-.history-item:hover,
-.tournament-item:hover{
-
-  transform:translateX(6px);
-}
-
-.fade-up{
-
-  animation:fadeUp .8s ease;
-}
-
-.vs{
-
-  display:flex;
-  align-items:center;
-
-  font-weight:900;
-}
-
-@keyframes fadeUp{
-
-  from{
-
-    opacity:0;
-    transform:translateY(25px);
-  }
-
-  to{
-
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-@keyframes float{
-
-  0%,100%{
-    transform:translateY(0);
-  }
-
-  50%{
-    transform:translateY(-6px);
-  }
-}
-
-@media(max-width:800px){
-
-  header h1{
-
-    font-size:42px;
-  }
-
-  .controls{
-
-    flex-direction:column;
-  }
-
-  button{
-
-    width:100%;
-  }
 }
