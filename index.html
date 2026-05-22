@@ -1,235 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Binix Paddlers</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/chart.js"
-  ></script>
-
-  <script
-    src="app.js"
-    defer
-  ></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seraphyx Maintenance Arena</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <div class="bg-glow glow1"></div>
-  <div class="bg-glow glow2"></div>
-
-  <header>
-
-    <h1>
-      🏓 BINIX PADDLERS
-    </h1>
-
-    <p>
-      Official Table Tennis Ranking System
-    </p>
-
-  </header>
-
-  <main>
-
-    <section class="hero fade-up">
-
-      <div id="topPlayer"></div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>📊 Club Statistics</h2>
-
-      <div class="stats-grid">
-
-        <div class="stat-box">
-          <span>Total Players</span>
-          <h3 id="totalPlayers">0</h3>
-        </div>
-
-        <div class="stat-box">
-          <span>Total Matches</span>
-          <h3 id="totalMatches">0</h3>
-        </div>
-
-        <div class="stat-box">
-          <span>Top Points</span>
-          <h3 id="highestPoints">0</h3>
-        </div>
-
-        <div class="stat-box">
-          <span>Longest Streak</span>
-          <h3 id="longestStreak">0</h3>
-        </div>
-
-      </div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>➕ Record Match</h2>
-
-      <div class="controls">
-
-        <select id="winner"></select>
-
-        <span class="vs">
-          VS
-        </span>
-
-        <select id="loser"></select>
-
-        <input
-          type="number"
-          id="winnerScore"
-          placeholder="Winner Score"
-        >
-
-        <input
-          type="number"
-          id="loserScore"
-          placeholder="Loser Score"
-        >
-
-        <button id="submitMatch">
-          Submit Match
-        </button>
-
-      </div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>🏆 Tournament Area</h2>
-
-      <div class="controls">
-
-        <input
-          type="text"
-          id="tournamentName"
-          placeholder="Tournament Name"
-        >
-
-        <input
-          type="text"
-          id="tournamentChampion"
-          placeholder="Champion Name"
-        >
-
-        <button id="addTournament">
-          Add Tournament
-        </button>
-
-      </div>
-
-      <div id="tournamentList"></div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>👤 Add Player</h2>
-
-      <div class="controls">
-
-        <input
-          type="text"
-          id="newPlayer"
-          placeholder="Player Name"
-        >
-
-        <input
-          type="file"
-          id="playerPhoto"
-          accept="image/*"
-        >
-
-        <button id="addPlayer">
-          Add Player
-        </button>
-
-        <button onclick="exportData()">
-          Export Data
-        </button>
-
-        <button onclick="resetAll()">
-          Reset
-        </button>
-
-      </div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>📈 Points Graph</h2>
-
-      <canvas id="pointsChart"></canvas>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>🏓 Rankings</h2>
-
-      <div class="table-wrap">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>#</th>
-              <th>Player</th>
-              <th>Points</th>
-              <th>Wins</th>
-              <th>Losses</th>
-              <th>Streak</th>
-              <th>Badges</th>
-              <th>Actions</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody id="leaderboard"></tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-    <section class="card fade-up">
-
-      <h2>📝 Match History</h2>
-
-      <div id="history"></div>
-
-    </section>
-
-  </main>
-
+<div class="header">⚔ SERAPHYX MAINTENANCE ARENA</div>
+<div class="sub">Server under maintenance — sharpen your skills!</div>
+
+<div id="hud">
+Score: <span id="score">0</span> |
+Coins: <span id="coins">0</span> |
+Time: <span id="time">30</span>s |
+Power: <span id="power">None</span>
+</div>
+
+<div class="buttons">
+<button onclick="startGame()">Start</button>
+<button onclick="openShop()">Shop</button>
+<button onclick="changeSkin()">Skin</button>
+</div>
+
+<div id="gameArea"></div>
+
+<script src="script.js"></script>
 </body>
-
 </html>
