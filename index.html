@@ -3,30 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seraphyx Maintenance Arena</title>
+<title>Seraphyx Arena</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="header">⚔ SERAPHYX MAINTENANCE ARENA</div>
-<div class="sub">Server under maintenance — sharpen your skills!</div>
+<!-- MENU -->
+<div id="menu" class="screen">
+    <h1>⚔ SERAPHYX ARENA</h1>
+    <p>Maintenance Training Simulation</p>
 
-<div id="hud">
-Score: <span id="score">0</span> |
-Coins: <span id="coins">0</span> |
-Time: <span id="time">30</span>s |
-Power: <span id="power">None</span>
+    <button onclick="Game.start()">Play</button>
+    <button onclick="Shop.open()">Shop</button>
 </div>
 
-<div class="buttons">
-<button onclick="startGame()">Start</button>
-<button onclick="openShop()">Shop</button>
-<button onclick="changeSkin()">Skin</button>
+<!-- HUD -->
+<div id="hud" class="hidden">
+    Score: <span id="score">0</span> |
+    Coins: <span id="coins">0</span> |
+    Time: <span id="time">30</span>
 </div>
 
-<div id="gameArea"></div>
+<!-- GAME -->
+<div id="gameArea" class="hidden"></div>
 
-<script src="script.js"></script>
+<!-- SHOP -->
+<div id="shop" class="hidden">
+    <h2>Seraphyx Armory</h2>
+    <div id="shopItems"></div>
+    <button onclick="Shop.close()">Close</button>
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
