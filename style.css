@@ -1,50 +1,36 @@
 body {
     margin: 0;
-    font-family: Arial;
-    background: radial-gradient(circle at top, #1a1a2e, #000);
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle, #1a1a2e, #000);
     color: white;
     text-align: center;
-    overflow: hidden;
 }
 
-.header {
-    font-size: 22px;
-    padding: 10px;
-    color: #b06cff;
-    font-weight: bold;
+/* SCREEN CONTROL */
+.screen {
+    padding-top: 80px;
 }
 
-.sub {
-    font-size: 13px;
-    opacity: 0.8;
+.hidden {
+    display: none;
 }
 
+/* HUD */
 #hud {
-    margin-top: 10px;
+    padding: 10px;
     font-size: 16px;
 }
 
-.buttons button {
-    margin: 5px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 10px;
-    background: #6c5ce7;
-    color: white;
-    cursor: pointer;
-}
-
+/* GAME AREA */
 #gameArea {
     width: 90vw;
     max-width: 600px;
     height: 400px;
     margin: 20px auto;
     background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(176,108,255,0.4);
     border-radius: 15px;
     position: relative;
     overflow: hidden;
-    touch-action: manipulation;
 }
 
 /* TARGET */
@@ -54,30 +40,27 @@ body {
     border-radius: 50%;
     position: absolute;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(176,108,255,0.8);
-    transition: transform 0.15s;
 }
 
-.target:active {
-    transform: scale(0.8);
-}
-
-/* POPUP */
-.popup {
+/* SHOP */
+#shop {
     position: absolute;
-    animation: floatUp 0.8s ease-out;
-    color: gold;
-    font-weight: bold;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 20px;
+    background: rgba(0,0,0,0.9);
+    border-radius: 10px;
 }
 
-@keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-40px); opacity: 0; }
+/* BUTTONS */
+button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background: #6c5ce7;
+    color: white;
+    cursor: pointer;
 }
-
-/* SKINS */
-.red { background: red; }
-.blue { background: #3498db; }
-.green { background: #2ecc71; }
-.gold { background: gold; }
-.purple { background: #9b59b6; }
